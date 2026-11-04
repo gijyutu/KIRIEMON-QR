@@ -1,0 +1,261 @@
+:root {
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+  color: #181818;
+  background: #fff;
+  --muted: #73736f;
+  --line: #b8b8b3;
+  --accent: #c54831;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body, h1, h2, p {
+  margin: 0;
+}
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 30rem);
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin-inline: auto;
+  padding: calc(30px + env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left));
+}
+
+h1, .wordmark {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+.editor {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-top: 80px;
+}
+
+.writing-area {
+  border-bottom: 1px solid var(--line);
+}
+
+.writing-area:focus-within {
+  border-bottom-color: #181818;
+  box-shadow: 0 1px 0 #181818;
+}
+
+.writing-area:has([aria-invalid="true"]) {
+  border-bottom-color: var(--accent);
+  box-shadow: 0 1px 0 var(--accent);
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  height: 222px;
+  margin: 0;
+  padding: 0 0 18px;
+  resize: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  caret-color: var(--accent);
+  font: inherit;
+  font-size: 1.75rem;
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+}
+
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.field-details {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.error {
+  min-height: 1.6em;
+  margin: 10px 0 24px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.error, .over-limit {
+  color: var(--accent);
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 2px solid #181818;
+  outline-offset: 4px;
+}
+
+button svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.generate-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 56px;
+  margin-top: auto;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 3px;
+  background: #181818;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.generate-button:hover {
+  background: #333;
+}
+
+.generate-button:active {
+  background: #444;
+}
+
+body:has(.qr-dialog[open]) {
+  overflow: hidden;
+}
+
+.qr-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #fff;
+  color: inherit;
+  overscroll-behavior: contain;
+}
+
+.qr-dialog[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.dialog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(18px + env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) 0 max(22px, env(safe-area-inset-left));
+}
+
+.dialog-heading .wordmark {
+  font-size: 1.125rem;
+}
+
+.close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 0 8px 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 0.875rem;
+}
+
+.close-button:hover {
+  color: var(--muted);
+}
+
+.close-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.qr-stage {
+  position: relative;
+  margin: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.qr-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-height: 650px) {
+  .workspace {
+    padding-top: calc(24px + env(safe-area-inset-top));
+  }
+
+  .editor {
+    margin-top: 48px;
+  }
+
+  textarea {
+    height: 166px;
+  }
+}
+
+@media (max-height: 480px) {
+  .editor {
+    margin-top: 28px;
+  }
+
+  textarea {
+    height: 116px;
+  }
+}
