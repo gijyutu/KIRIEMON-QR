@@ -5,7 +5,7 @@ const MAX_UTF8_BYTES = 2330;
 const QUIET_ZONE = 4;
 const encoder = new TextEncoder();
 const segmenter = new Intl.Segmenter("ja", { granularity: "grapheme" });
-const forbiddenCharacters = /[\p{Script=Latin}\p{Decimal_Number}]/u;
+const forbiddenCharacters = /[\p{Script=Latin}\p{Decimal_Number}:：]/u;
 
 const form = document.querySelector("#qr-form");
 const input = document.querySelector("#qr-text");
@@ -38,7 +38,7 @@ function validateInput(value, submitted = false) {
     return "20字以内に短くしてください。";
   }
   if (forbiddenCharacters.test(value)) {
-    return "英字と数字を削除してください。";
+    return "英字、数字、コロンを削除してください。";
   }
   if (submitted && length === 0) {
     return "変換する文字を入力してください。";
