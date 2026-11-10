@@ -2,6 +2,7 @@
 
 const MAX_CHARACTERS = 20;
 const MAX_UTF8_BYTES = 2330;
+// 読み取り用の白い余白を上下左右に4セルずつ確保する。
 const QUIET_ZONE = 4;
 const encoder = new TextEncoder();
 const segmenter = new Intl.Segmenter("ja", { granularity: "grapheme" });
@@ -12,6 +13,7 @@ const input = document.querySelector("#qr-text");
 const counter = document.querySelector("#qr-count");
 const error = document.querySelector("#qr-error");
 const dialog = document.querySelector("#qr-dialog");
+const caption = document.querySelector("#qr-caption");
 const image = document.querySelector("#qr-image");
 const close = document.querySelector("#qr-close");
 
@@ -113,6 +115,8 @@ form.addEventListener("submit", (event) => {
   setInputError("");
   try {
     image.src = makeQrPng(bytes);
+    // 入力した文字は画像の外にテキストとして表示し、白い余白を保つ。
+    caption.textContent = value;
     dialog.showModal();
   } catch (cause) {
     console.error("QR code generation failed.", cause);
