@@ -7,6 +7,8 @@ const QUIET_ZONE = 4;
 const encoder = new TextEncoder();
 const segmenter = new Intl.Segmenter("ja", { granularity: "grapheme" });
 const forbiddenCharacters = /[\p{Script=Latin}\p{Decimal_Number}:：]/u;
+// 半角・全角スペースなどの空白とタブを検出する。本文中の改行は使える。
+const spacesOrTabs = /[\p{Zs}\t]/u;
 
 const form = document.querySelector("#qr-form");
 const input = document.querySelector("#qr-text");
@@ -42,7 +44,10 @@ function validateInput(value, submitted = false) {
   if (forbiddenCharacters.test(value)) {
     return "英字、数字、コロンを削除してください。";
   }
-  if (submitted && length === 0) {
+  if (spacesOrTabs.test(value)) {
+    return "空白（スペースやタブ）を削除してください。";
+  }
+  if (submitted && value.trim() === "") {
     return "変換する文字を入力してください。";
   }
   return "";

@@ -155,6 +155,14 @@ button svg {
   background: #444;
 }
 
+.qr-trademark {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
 body:has(.qr-dialog[open]) {
   overflow: hidden;
 }
@@ -223,13 +231,10 @@ body:has(.qr-dialog[open]) {
   text-align: center;
 }
 
-.qr-caption, .qr-trademark {
-  flex: none;
-  padding-inline: 16px;
-}
-
 .qr-caption {
+  flex: none;
   max-height: 25%;
+  padding-inline: 16px;
   overflow: auto;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
@@ -245,12 +250,6 @@ body:has(.qr-dialog[open]) {
   aspect-ratio: 1;
   object-fit: contain;
   image-rendering: pixelated;
-}
-
-.qr-trademark {
-  color: var(--muted);
-  font-size: 0.8125rem;
-  line-height: 1.6;
 }
 
 .visually-hidden {

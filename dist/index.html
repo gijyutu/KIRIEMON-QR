@@ -22,7 +22,7 @@
           <textarea id="qr-text" rows="1" placeholder="ここに文字を入力" spellcheck="false" autocapitalize="off" aria-describedby="qr-limit qr-hint qr-count qr-error"></textarea>
         </div>
         <div class="field-details">
-          <p id="qr-hint">英数字とコロンは使えません</p>
+          <p id="qr-hint">英数字・コロン・空白は使えません</p>
           <span id="qr-count" class="count">0 / 20</span>
         </div>
         <p id="qr-error" class="error" role="alert"></p>
@@ -31,6 +31,7 @@
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
         </button>
       </form>
+      <p class="qr-trademark">QRコードは株式会社デンソーウェーブの登録商標です。</p>
 
       <noscript><p>QRコードの生成にはJavaScriptが必要です。</p></noscript>
     </main>
@@ -47,7 +48,6 @@
       <div class="qr-stage">
         <p id="qr-caption" class="qr-caption" dir="auto"></p>
         <img id="qr-image" class="qr-image" alt="生成したQRコード">
-        <p class="qr-trademark">QRコードは株式会社デンソーウェーブの登録商標です。</p>
       </div>
     </dialog>
   </body>

@@ -8,4 +8,4 @@
 
 ## QRコードの仕様
 
-入力は20字以内です。半角・全角の英字、数字、コロンを含む入力には、エラーを表示します。結合文字や複数の文字からなる絵文字は、画面上のひとまとまりを1字として数えます。生成には、MITライセンスの [Project Nayuki QR Code generator v1.8.0](https://github.com/nayuki/QR-Code-generator/releases/tag/v1.8.0) を使用しています。
+入力は20字以内です。英字、数字、コロン、スペース（半角・全角を含む）、タブが入っている場合や、改行だけの場合はエラーを表示します。結合文字や複数の文字からなる絵文字は、画面上のひとまとまりを1字として数えます。生成には、MITライセンスの [Project Nayuki QR Code generator v1.8.0](https://github.com/nayuki/QR-Code-generator/releases/tag/v1.8.0) を使用しています。
