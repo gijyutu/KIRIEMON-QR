@@ -6,9 +6,8 @@ const MAX_UTF8_BYTES = 2330;
 const QUIET_ZONE = 4;
 const encoder = new TextEncoder();
 const segmenter = new Intl.Segmenter("ja", { granularity: "grapheme" });
-const forbiddenCharacters = /[\p{Script=Latin}\p{Decimal_Number}:：]/u;
-// 半角・全角スペースやタブに加え、改行も空白文字として検出する。
-const whitespaceCharacters = /\p{White_Space}/u;
+// 小さいひらがな、濁音、半濁音を含む「ぁ」から「ん」だけを許可する。
+const allowedHiragana = /^[ぁ-ん]*$/u;
 
 const form = document.querySelector("#qr-form");
 const input = document.querySelector("#qr-text");
@@ -41,13 +40,10 @@ function validateInput(value, submitted = false) {
   if (length > MAX_CHARACTERS) {
     return "20字以内に短くしてください。";
   }
-  if (forbiddenCharacters.test(value)) {
-    return "英字、数字、コロンを削除してください。";
+  if (!allowedHiragana.test(value)) {
+    return "ひらがな（ぁ〜ん）だけを入力してください。";
   }
-  if (whitespaceCharacters.test(value)) {
-    return "空白（スペース、タブ、改行）を削除してください。";
-  }
-  if (submitted && value.trim() === "") {
+  if (submitted && length === 0) {
     return "変換する文字を入力してください。";
   }
   return "";
@@ -90,7 +86,7 @@ function makeQrPng(bytes) {
 }
 
 function updateInput() {
-  setInputError(validateInput(input.value));
+  setInputError(validateInput(input.value.normalize("NFC")));
 }
 
 input.addEventListener("input", (event) => {
@@ -104,7 +100,8 @@ window.addEventListener("pageshow", updateInput);
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const value = input.value;
+  // 「か」と結合濁点を「が」にそろえ、検証した文字をQRコードに入れる。
+  const value = input.value.normalize("NFC");
   const validationError = validateInput(value, true);
   if (validationError) {
     showInputError(validationError);
