@@ -41,6 +41,7 @@ h1, .wordmark {
 }
 
 .writing-area {
+  position: relative;
   border-bottom: 1px solid var(--line);
 }
 
@@ -55,6 +56,8 @@ h1, .wordmark {
 }
 
 textarea {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   /* 入力が空のときは罫線を近くに置き、改行や折り返しに合わせて広げる。 */
@@ -73,6 +76,31 @@ textarea {
   font-size: 1.75rem;
   line-height: 1.65;
   letter-spacing: 0.02em;
+}
+
+.invalid-marker-layer {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  padding: 0 0 6px;
+  overflow: hidden;
+  color: transparent;
+  font: inherit;
+  font-size: 1.75rem;
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  pointer-events: none;
+}
+
+.invalid-marker {
+  color: transparent;
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.1em;
 }
 
 textarea::placeholder {
@@ -98,10 +126,21 @@ textarea::placeholder {
 }
 
 .error {
-  min-height: 1.6em;
-  margin: 10px 0 24px;
+  max-height: 0;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0;
   font-size: 0.875rem;
   line-height: 1.6;
+  transition: max-height 180ms ease, margin 180ms ease, opacity 180ms ease;
+}
+
+.error.has-message {
+  max-height: min(8em, 28vh);
+  margin: 10px 0 24px;
+  overflow-y: auto;
+  opacity: 1;
+  overscroll-behavior: contain;
 }
 
 .error, .over-limit {
@@ -151,11 +190,20 @@ button svg {
   background: #333;
 }
 
+.generate-button:disabled,
+.generate-button:disabled:hover,
+.generate-button:disabled:active {
+  background: #dededb;
+  color: #73736f;
+  cursor: not-allowed;
+}
+
 .generate-button:active {
   background: #444;
 }
 
 .qr-trademark {
+  display: block;
   margin-top: 6px;
   color: var(--muted);
   font-size: 0.75rem;
@@ -274,6 +322,10 @@ body:has(.qr-dialog[open]) {
   textarea {
     max-height: 166px;
   }
+
+  .invalid-marker-layer {
+    max-height: 166px;
+  }
 }
 
 @media (max-height: 480px) {
@@ -283,5 +335,15 @@ body:has(.qr-dialog[open]) {
 
   textarea {
     max-height: 116px;
+  }
+
+  .invalid-marker-layer {
+    max-height: 116px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .error {
+    transition: none;
   }
 }

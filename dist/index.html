@@ -13,25 +13,29 @@
   </head>
   <body>
     <main class="workspace">
-      <h1>KIRIEMON</h1>
+      <h1>鶴城丘高校 技術部</h1>
+      </div>
+      <p>KIRIEMON QRコード作成
+      </p>
 
       <form id="qr-form" class="editor">
         <label for="qr-text" class="visually-hidden">打ちたい文字</label>
         <span id="qr-limit" class="visually-hidden">60字以内</span>
         <div class="writing-area">
+          <div id="qr-markers" class="invalid-marker-layer" aria-hidden="true"></div>
           <textarea id="qr-text" rows="4" placeholder="ここに文字を入力" spellcheck="false" autocapitalize="off" aria-describedby="qr-limit qr-hint qr-count qr-error"></textarea>
         </div>
         <div class="field-details">
-          <p id="qr-hint">英数字とコロンは使えません</p>
+          <p id="qr-hint">ひらがな・カタカナ・句読点・「ー」・空白が使えます。</p>
           <span id="qr-count" class="count">0 / 60</span>
         </div>
         <p id="qr-error" class="error" role="alert"></p>
-        <button class="generate-button" type="submit" aria-haspopup="dialog">
+        <button class="generate-button" type="submit" aria-haspopup="dialog" disabled>
           <span>QRコードを生成</span>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
         </button>
       </form>
-      
+      <small class="qr-trademark">© 2026 鶴城丘高校 技術部</small>
       <noscript><p>QRコードの生成にはJavaScriptが必要です。</p></noscript>
     </main>
 
