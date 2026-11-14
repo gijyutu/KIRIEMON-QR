@@ -522,3 +522,51 @@ body:has(.qr-dialog[open]) {
   color: inherit;
   text-underline-offset: 2px;
 }
+
+/* 使い方ページ：使える文字の一覧表 */
+.kana-table {
+  width: 100%;
+  margin: 0 0 10px;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* 表の見出し行。小さなラベルのように表示する。 */
+.kana-table thead th {
+  padding: 0 8px 5px 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+/* 各行のセル。細い罫線で区切る。 */
+.kana-table tbody th,
+.kana-table tbody td {
+  padding: 6px 8px 6px 0;
+  border-bottom: 1px solid #ebe9e4;
+  text-align: left;
+  vertical-align: top;
+}
+
+/* 種類の列は折り返さず、控えめな色にする。 */
+.kana-table tbody th {
+  width: 6.5em;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 文字の列は、長くても枠内で折り返す。 */
+.kana-table tbody td {
+  overflow-wrap: anywhere;
+}
+
+/* 最後の行の罫線は消す。 */
+.kana-table tbody tr:last-child th,
+.kana-table tbody tr:last-child td {
+  border-bottom: 0;
+}
