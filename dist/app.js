@@ -118,7 +118,9 @@ form.addEventListener("submit", (event) => {
   try {
     image.src = makeQrPng(bytes);
     // 入力した文字は画像の外にテキストとして表示し、白い余白を保つ。
-    caption.textContent = value;
+    if (caption) {
+      caption.textContent = value;
+    }
     dialog.showModal();
   } catch (cause) {
     console.error("QR code generation failed.", cause);
