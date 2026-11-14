@@ -1,86 +1,62 @@
 <!doctype html>
-<!--
-  使い方ページ。
-  来場者向けに、QRコードの作り方と点字ロボットの使い方を説明する。
-  見た目は styles.css をトップページと共有している。
--->
-<html lang="ja">
+<html lang="ja"> <!-- 使い方ページ。来場者向けにQRコードの作り方と点字ロボットの使い方を説明する。 -->
   <head>
-    <!-- 文字コードの指定。日本語が文字化けしないようにする。 -->
-    <meta charset="utf-8">
-    <!-- スマートフォンで画面幅に合わせて表示するための設定。 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <!-- 検索結果などに表示される、ページの短い説明。 -->
-    <meta name="description" content="KIRIEMON QRコードの使い方。来場者がQRコードを読み取り、点字ロボットが実行するシステムのガイドです。">
-    <!-- コンテンツセキュリティポリシー（CSP）。外部通信を禁止して安全に動かす。 -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
-    <!-- ブラウザーのタブに表示されるページタイトル。 -->
-    <title>使い方 - KIRIEMON QRコード</title>
-    <!-- タブやブックマークに表示される小さなアイコン（QRコード風のSVG）。 -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cpath fill='%23181818' d='M0 0h2v2H0zm2 2h2v2H2z'/%3E%3C/svg%3E">
-    <!-- 共通のスタイルシート。 -->
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8"> <!-- 文字コードの指定。日本語の文字化けを防ぐ。 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"> <!-- スマホの画面幅に合わせる設定。 -->
+    <meta name="description" content="KIRIEMON QRコードの使い方。来場者がQRコードを読み取り、点字ロボットが実行するシステムのガイドです。"> <!-- 検索結果に表示される説明。 -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'"> <!-- 外部通信を禁止するCSP。このページは通信しない。 -->
+    <title>使い方 - KIRIEMON QRコード</title> <!-- ブラウザーのタブに表示されるタイトル。 -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cpath fill='%23181818' d='M0 0h2v2H0zm2 2h2v2H2z'/%3E%3C/svg%3E"> <!-- タブやブックマークに表示されるアイコン。 -->
+    <link rel="stylesheet" href="styles.css"> <!-- 共通のスタイルシート。 -->
   </head>
   <body>
-    <!--
-      画面全体のコンテナ。
-      howto-page クラスを付けると、このページ専用の見出しサイズなどが適用される。
-    -->
-    <main class="workspace howto-page">
-      <!-- ページ上部の見出しエリア。 -->
-      <header class="page-heading">
-        <!-- 学校名と「作成画面へ戻る」チップを横に並べる行。 -->
-        <div class="heading-bar">
-          <h1>鶴城丘高校 技術部</h1>
-          <!-- トップページ（QRコード作成画面）へ戻るリンク。 -->
-          <a class="howto-link" href="index.html">← QRコードを作る</a>
+    <main class="workspace howto-page"> <!-- 画面全体のコンテナ。howto-pageで使い方ページ専用の見出しサイズを適用。 -->
+      <header class="page-heading"> <!-- ページ上部の見出しエリア。 -->
+        <div class="heading-bar"> <!-- 学校名と「作成画面へ戻る」チップを横に並べる行。 -->
+          <h1>鶴城丘高校 技術部</h1> <!-- 学校名。 -->
+          <a class="howto-link" href="index.html">← QRコードを作る</a> <!-- トップページ（QRコード作成画面）へ戻るリンク。 -->
         </div>
-        <p>QRコードの使い方</p>
+        <p>QRコードの使い方</p> <!-- ページの見出し。 -->
       </header>
 
-      <!-- このシステムが何をするものかの短い説明。 -->
-      <p class="howto-intro">SIリーグ用の点字ロボットシステムです。来場者が入力した文字をQRコードにして、ロボットが点字で入力・出力します。生成は端末内で完結し、サーバーに送信されません。</p>
+      <p class="howto-intro">SIリーグ用の点字ロボットシステムです。来場者が入力した文字をQRコードにして、ロボットが点字で入力・出力します。生成は端末内で完結し、サーバーに送信されません。</p> <!-- このシステムの短い説明。 -->
 
-      <!-- guide クラスは、罫線で区切られた説明セクションのスタイル。 -->
-      <section class="guide">
-        <!-- セクションの小見出し。 -->
-        <h2>手順</h2>
-        <!-- 番号付きリスト（ol）で操作の順番を表示する。 -->
-        <ol>
-          <li>文字を入力し、「QRコードを生成」を押す。</li>
-          <li>表示されたQRコードをロボットの読み取り部にかざす。</li>
-          <li>ロボットが読み取り、点字で入力・出力する。</li>
+      <section class="guide"> <!-- 説明セクション（罫線で区切られる）。 -->
+        <h2>手順</h2> <!-- セクションの小見出し。 -->
+        <ol> <!-- 操作の順番を表す番号付きリスト。 -->
+          <li>文字を入力し、「QRコードを生成」を押す。</li> <!-- 手順1。 -->
+          <li>表示されたQRコードをロボットの読み取り部にかざす。</li> <!-- 手順2。 -->
+          <li>ロボットが読み取り、点字で入力・出力する。</li> <!-- 手順3。 -->
         </ol>
       </section>
 
-      <section class="guide">
-        <h2>入力できる文字</h2>
-        <!-- 箇条書き（ul）で入力ルールを表示する。 -->
-        <ul>
-          <li>ひらがな・カタカナ（ァ〜ヶ）・長音（ー）・句読点（！？。、）・スペース。</li>
-          <li>60字以内。改行・タブ・半角ハイフン（-）は不可。</li>
-          <li>半角カタカナと濁点・半濁点は、ひらがな1字に変換してQR化。</li>
+      <section class="guide"> <!-- 入力ルールのセクション。 -->
+        <h2>入力できる文字</h2> <!-- セクションの小見出し。 -->
+        <ul> <!-- 箇条書きリスト。 -->
+          <li>ひらがな（あ〜ん、が・ぱなど）・カタカナ（入力するとひらがなに変換）・句読点（！？。、）・長音（ー）・空白。</li> <!-- 対応している文字の説明。 -->
+          <li>小さい「ゃ・ゅ・ょ」は「きゃ」「しゃ」などの組み合わせでのみ使えます。</li> <!-- 組み合わせ専用の文字の説明。 -->
+          <li>「ぁ・ぃ・ぅ・ぇ・ぉ・ゎ・ゐ・ゑ・ゔ・ゕ・ゖ」は単独では使えません。</li> <!-- 対応していない文字の説明。 -->
+          <li>60字以内。改行・タブ・半角ハイフン（-）は使えません。</li> <!-- 字数と使えない文字の説明。 -->
+          <li>半角カタカナと濁点・半濁点は、ひらがな1字に変換してQR化します。</li> <!-- 正規化の説明。 -->
         </ul>
       </section>
 
-      <section class="guide">
-        <h2>ロボット運用の注意</h2>
-        <ul>
-          <li>QRコードは印刷するか画面表示し、読み取り範囲内にかざす。</li>
-          <li>明るい場所で、白黒のコントラストを確保する。</li>
+      <section class="guide"> <!-- ロボット運用の注意セクション。 -->
+        <h2>ロボット運用の注意</h2> <!-- セクションの小見出し。 -->
+        <ul> <!-- 箇条書きリスト。 -->
+          <li>QRコードは印刷するか画面表示し、読み取り範囲内にかざす。</li> <!-- 読み取り方の注意。 -->
+          <li>明るい場所で、白黒のコントラストを確保する。</li> <!-- 読み取り環境の注意。 -->
         </ul>
       </section>
 
-      <section class="guide">
-        <h2>ライセンス</h2>
-        <!-- QRコード生成ライブラリのライセンス表記。 -->
-        <p>QRコード生成には MIT ライセンスの Project Nayuki QR Code generator v1.8.0 を使用しています。</p>
+      <section class="guide"> <!-- ライセンスのセクション。 -->
+        <h2>ライセンス</h2> <!-- セクションの小見出し。 -->
+        <p>QRコード生成には MIT ライセンスの Project Nayuki QR Code generator v1.8.0 を使用しています。</p> <!-- ライブラリのライセンス表記。 -->
       </section>
 
-      <!-- ページ下部の商標・著作権表示。 -->
-      <footer class="site-footer">
-        <small>QRコードは株式会社デンソーウェーブの登録商標です。</small>
-        <small>© 2026 鶴城丘高校 技術部</small>
+      <footer class="site-footer"> <!-- 商標・著作権の表示。 -->
+        <small>QRコードは株式会社デンソーウェーブの登録商標です。</small> <!-- 商標表記。 -->
+        <small>© 2026 鶴城丘高校 技術部</small> <!-- 著作権表示。 -->
       </footer>
     </main>
   </body>

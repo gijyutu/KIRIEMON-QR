@@ -5,10 +5,6 @@
 // ダイアログに大きく表示する。入力内容をサーバーへ送信することはない。
 // QRコードの生成には vendor/qrcodegen-v1.8.0-es6.js の qrcodegen を使う。
 
-
-//constはjavascriptの変数宣言で、再代入できない定数を作るために使う。
-
-
 // 入力できる文字数の上限。画面のカウンター表示と検証の両方で使う。
 const MAX_CHARACTERS = 60;
 
@@ -27,10 +23,6 @@ const encoder = new TextEncoder();
 // 濁点や結合文字を分けて数えてしまわないようにする。
 const segmenter = new Intl.Segmenter("ja", { granularity: "grapheme" });
 
-// ひらがな（ぁ〜ん・ゔ・ゕ・ゖ）・長音（ー）・句読点・空白だけを許可する。
-// カタカナはひらがなに変換してから、この正規表現で1文字ずつ判定する。
-const allowedCharacter = /^[ぁ-んゔゕゖ！？。、ー 　]$/u;
-
 // 半角カタカナ（濁点・半濁点を含む）を検出するパターン。
 // NFKCで全角カタカナに変換すると、濁点・半濁点も1文字に合成される。
 const halfwidthKanaPattern = /[\uFF66-\uFF9D\uFF70][\uFF9E\uFF9F]?/gu;
@@ -38,6 +30,14 @@ const halfwidthKanaPattern = /[\uFF66-\uFF9D\uFF70][\uFF9E\uFF9F]?/gu;
 // 全角カタカナ（ァ〜ヶ）を検出するパターン。
 // コードポイントを0x60引いて、対応するひらがなにする。
 const katakanaPattern = /[\u30A1-\u30F6]/gu;
+
+// 対応文字データベース（kana-db.json）のキー一覧。
+// 読み込みが終わるまでは null で、検証と生成ボタンの有効化を保留する。
+let kanaKeys = null;
+
+// kana-db.json の中で最も長いキーの書記素数。
+// 「きゃ」などの組み合わせを最長一致で探すときに使う。
+let maxKeyLength = 0;
 
 // 入力フォーム全体。submitイベントをここで受け取る。
 const form = document.querySelector("#qr-form");
@@ -126,48 +126,102 @@ function setInputError(message, disabled = Boolean(message), invalidRanges = [])
 // 入力内容を検証し、QRコードに入れる文字列とエラーメッセージを返す。
 // submitted が true のときは、空入力もエラーにする（送信時のチェック用）。
 function validateInput(source, submitted = false) {
-  // カタカナをひらがなに変換した文字列で字数を数える。
-  const value = toHiragana(source.normalize("NFC"));
-  const length = Array.from(segmenter.segment(value)).length;
-  // カウンターを更新し、上限を超えたら赤く表示する。
-  counter.textContent = `${length} / ${MAX_CHARACTERS}`;
-  counter.classList.toggle("over-limit", length > MAX_CHARACTERS);
-
   const invalidItems = [];
   const invalidRanges = [];
+  // 変換後の1文字ごとに、元の入力のどの範囲から来たかを記録する。
+  const convertedUnits = [];
+  const sourceSegments = Array.from(segmenter.segment(source));
+
   let position = 0;
-  // 元の入力を1文字ずつ見て、使えない文字を探す。
-  for (const { segment, index } of segmenter.segment(source)) {
+  for (const { segment, index } of sourceSegments) {
     position++;
-    let label = "";
+    const sourceStart = index;
+    const sourceEnd = index + segment.length;
+    // カタカナなどを、QRコード格納用のひらがなに変換する。
+    const converted = toHiragana(segment.normalize("NFC"));
+
     // 改行・タブ・半角ハイフンは、変換前の文字として個別に分かりやすく案内する。
+    let label = "";
     if (segment.includes("\n") || segment.includes("\r")) {
       label = "改行";
     } else if (segment.includes("\t")) {
       label = "タブ";
     } else if (segment.includes("-")) {
       label = "半角ハイフン「-」";
-    } else {
-      // カタカナ→ひらがな変換後の文字が許可リストに含まれるか確認する。
-      const convertedSegment = toHiragana(segment.normalize("NFC"));
-      const unsupported = Array.from(segmenter.segment(convertedSegment)).some(
-        ({ segment: outputSegment }) => !allowedCharacter.test(outputSegment),
-      );
-      if (unsupported) label = `「${segment}」`;
     }
 
-    // 使えない文字は「何文字目に何が入っているか」と、波線を引く範囲を記録する。
     if (label) {
       invalidItems.push({ position, label });
-      invalidRanges.push({ start: index, end: index + segment.length });
+      invalidRanges.push({ start: sourceStart, end: sourceEnd });
+    }
+
+    // 1つの入力文字が複数の変換結果になる場合も想定して、1文字ずつ記録する。
+    for (const { segment: unit } of segmenter.segment(converted)) {
+      convertedUnits.push({
+        text: unit,
+        sourceStart,
+        sourceEnd,
+        position,
+        // 改行などで既にエラー報告済みの文字は、DBの照合を重ねて行わない。
+        handled: Boolean(label),
+      });
     }
   }
 
+  const value = convertedUnits.map((unit) => unit.text).join("");
+  const length = convertedUnits.length;
+  // カウンターを更新し、上限を超えたら赤く表示する。
+  counter.textContent = `${length} / ${MAX_CHARACTERS}`;
+  counter.classList.toggle("over-limit", length > MAX_CHARACTERS);
+
   // 上限を超えた分（61文字目以降）も波線を引く。
   if (length > MAX_CHARACTERS) {
-    const sourceSegments = Array.from(segmenter.segment(source));
-    if (sourceSegments[MAX_CHARACTERS]) {
-      invalidRanges.push({ start: sourceSegments[MAX_CHARACTERS].index, end: source.length });
+    const firstOver = convertedUnits[MAX_CHARACTERS];
+    if (firstOver) {
+      invalidRanges.push({ start: firstOver.sourceStart, end: source.length });
+    }
+  }
+
+  // 対応文字データベースを読み込めているときだけ、文字の対応を確認する。
+  if (kanaKeys) {
+    // 変換後の文字列を、左から最長一致でデータベースのキーに区切る。
+    // 例: 「きゃ」は2文字キー、「きよう」は「き」+「よ」+「う」。
+    let unitIndex = 0;
+    while (unitIndex < convertedUnits.length) {
+      const unit = convertedUnits[unitIndex];
+      if (unit.handled) {
+        unitIndex++;
+        continue;
+      }
+
+      let matchedLength = 0;
+      const maxLength = Math.min(maxKeyLength, convertedUnits.length - unitIndex);
+      for (let candidateLength = maxLength; candidateLength >= 1; candidateLength--) {
+        const candidate = convertedUnits
+          .slice(unitIndex, unitIndex + candidateLength)
+          .map((item) => item.text)
+          .join("");
+        if (kanaKeys.has(candidate)) {
+          matchedLength = candidateLength;
+          break;
+        }
+      }
+
+      if (matchedLength > 0) {
+        unitIndex += matchedLength;
+        continue;
+      }
+
+      // データベースに無い文字は、元の入力のどこかを特定してエラーにする。
+      const original = source.slice(unit.sourceStart, unit.sourceEnd);
+      const isSmallYoon = unit.text === "ゃ" || unit.text === "ゅ" || unit.text === "ょ";
+      invalidItems.push({
+        position: unit.position,
+        label: isSmallYoon ? `小さい「${original}」` : `「${original}」`,
+        isSmallYoon,
+      });
+      invalidRanges.push({ start: unit.sourceStart, end: unit.sourceEnd });
+      unitIndex++;
     }
   }
 
@@ -189,10 +243,15 @@ function validateInput(source, submitted = false) {
     messages.push(`${MAX_CHARACTERS + 1}文字目以降は${MAX_CHARACTERS}字の上限を超えています。`);
   }
   if (invalidItems.length > 0) {
-    const locations = invalidItems.map(({ position, label }) => `${position}文字目の${label}`).join("、");
-    const hasHyphen = invalidItems.some(({ label }) => label.startsWith("半角ハイフン"));
-    const allowed = "ひらがな・カタカナ・句読点（！？。、）・長音（ー）・空白を使ってください。";
-    messages.push(`${locations}は使えません。${hasHyphen ? "長音は「ー」を入力してください。" : allowed}`);
+    const locations = invalidItems.map(({ position: itemPosition, label }) => `${itemPosition}文字目の${label}`).join("、");
+    const hasHyphen = invalidItems.some(({ label }) => label.includes("半角ハイフン"));
+    const hasSmallYoon = invalidItems.some(({ isSmallYoon }) => isSmallYoon);
+    const hint = hasHyphen
+      ? "長音は「ー」を入力してください。"
+      : hasSmallYoon
+        ? "小さい「ゃ・ゅ・ょ」は「きゃ」のように組み合わせて使ってください。"
+        : "対応しているひらがな・句読点（！？。、）・長音（ー）・空白を使ってください。";
+    messages.push(`${locations}は使えません。${hint}`);
   }
   if (submitted && length === 0) messages.push("変換する文字を入力してください。");
 
@@ -246,6 +305,11 @@ function makeQrPng(bytes) {
 
 // 現在の入力内容で検証し、画面表示を更新する。
 function updateInput() {
+  // 対応文字データベースの読み込みが終わるまでは、生成できないようにしておく。
+  if (!kanaKeys) {
+    generateButton.disabled = true;
+    return;
+  }
   const result = validateInput(input.value);
   setInputError(result.message, Boolean(result.message) || result.length === 0, result.invalidRanges);
 }
@@ -273,9 +337,42 @@ input.addEventListener("scroll", () => {
 window.addEventListener("pageshow", updateInput);
 updateInput();
 
+// 対応文字データベース（kana-db.json）を読み込む。
+// single（1文字）と combo（組み合わせ）をまとめて、最長一致検索用の Set にする。
+fetch("kana-db.json")
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`kana-db.json: HTTP ${response.status}`);
+    }
+    return response.json();
+  })
+  .then((data) => {
+    const single = Array.isArray(data.single) ? data.single : [];
+    const combo = Array.isArray(data.combo) ? data.combo : [];
+    kanaKeys = new Set([...single, ...combo]);
+    maxKeyLength = 0;
+    for (const key of kanaKeys) {
+      const keyLength = Array.from(segmenter.segment(key)).length;
+      if (keyLength > maxKeyLength) {
+        maxKeyLength = keyLength;
+      }
+    }
+    updateInput();
+  })
+  .catch((cause) => {
+    console.error("対応文字データの読み込みに失敗しました。", cause);
+    setInputError("対応文字データを読み込めませんでした。ページを再読み込みしてください。", true);
+  });
+
 // 「QRコードを生成」が押されたときの処理。
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+
+  // データベースの読み込みが終わっていない場合は生成しない。
+  if (!kanaKeys) {
+    setInputError("対応文字データを読み込んでいます。少しお待ちください。", true);
+    return;
+  }
 
   // 入力表示は保ち、カタカナをひらがなに変換した文字列をQRコードに入れる。
   const source = input.value;
