@@ -1,0 +1,20 @@
+
+name: "💡 その他・意見"
+description: "その他の意見、アイデア、相談などはこちら"
+title: "[Suggestion] "
+
+body:
+  - type: textarea
+    id: content
+    attributes:
+      label: 内容
+      description: 自由に意見や考えを記入してください。
+      placeholder: 気になったことや提案など
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 補足
+      description: 必要に応じて追加情報を記入してください。
