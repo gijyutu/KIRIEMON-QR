@@ -17,13 +17,13 @@
 
       <form id="qr-form" class="editor">
         <label for="qr-text" class="visually-hidden">打ちたい文字</label>
-        <span id="qr-limit" class="visually-hidden">20字以内</span>
+        <span id="qr-limit" class="visually-hidden">60字以内</span>
         <div class="writing-area">
-          <textarea id="qr-text" rows="1" placeholder="ここに文字を入力" spellcheck="false" autocapitalize="off" aria-describedby="qr-limit qr-hint qr-count qr-error"></textarea>
+          <textarea id="qr-text" rows="4" placeholder="ここに文字を入力" spellcheck="false" autocapitalize="off" aria-describedby="qr-limit qr-hint qr-count qr-error"></textarea>
         </div>
         <div class="field-details">
-          <p id="qr-hint">ひらがな（ぁ〜ん）のみ入力できます</p>
-          <span id="qr-count" class="count">0 / 20</span>
+          <p id="qr-hint">英数字とコロンは使えません</p>
+          <span id="qr-count" class="count">0 / 60</span>
         </div>
         <p id="qr-error" class="error" role="alert"></p>
         <button class="generate-button" type="submit" aria-haspopup="dialog">
@@ -31,8 +31,7 @@
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
         </button>
       </form>
-      <p class="qr-trademark">QRコードは株式会社デンソーウェーブの登録商標です。</p>
-
+      
       <noscript><p>QRコードの生成にはJavaScriptが必要です。</p></noscript>
     </main>
 
@@ -46,7 +45,6 @@
         </button>
       </header>
       <div class="qr-stage">
-        <p id="qr-caption" class="qr-caption" dir="auto"></p>
         <img id="qr-image" class="qr-image" alt="生成したQRコード">
       </div>
     </dialog>

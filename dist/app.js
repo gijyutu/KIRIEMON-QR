@@ -1,6 +1,6 @@
 "use strict";
 
-const MAX_CHARACTERS = 20;
+const MAX_CHARACTERS = 60;
 const MAX_UTF8_BYTES = 2330;
 // 読み取り用の白い余白を上下左右に4セルずつ確保する。
 const QUIET_ZONE = 4;
@@ -38,7 +38,7 @@ function validateInput(value, submitted = false) {
   counter.classList.toggle("over-limit", length > MAX_CHARACTERS);
 
   if (length > MAX_CHARACTERS) {
-    return "20字以内に短くしてください。";
+    return "60字以内に短くしてください。";
   }
   if (!allowedHiragana.test(value)) {
     return "ひらがな（ぁ〜ん）だけを入力してください。";

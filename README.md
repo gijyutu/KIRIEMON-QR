@@ -8,4 +8,4 @@
 
 ## QRコードの仕様
 
-入力できるのは、小さい文字や濁音・半濁音を含むひらがな（ぁ〜ん）で、20字以内です。濁点や半濁点が別の文字として入力された場合は、合成できる組み合わせを1字にまとめてからQRコードに変換します。生成には、MITライセンスの [Project Nayuki QR Code generator v1.8.0](https://github.com/nayuki/QR-Code-generator/releases/tag/v1.8.0) を使用しています。
+入力できるのは、小さい文字や濁音・半濁音を含むひらがな（ぁ〜ん）で60字以内です。濁点や半濁点が別の文字として入力された場合は、合成できる組み合わせを1字にまとめてからQRコードに変換します。生成には、MITライセンスの [Project Nayuki QR Code generator v1.8.0](https://github.com/nayuki/QR-Code-generator/releases/tag/v1.8.0) を使用しています。
