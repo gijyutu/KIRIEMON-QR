@@ -215,7 +215,7 @@ button svg {
 .generate-button:disabled:hover,
 .generate-button:disabled:active {
   background: #dededb;
-  color: #73736f;
+  color: #535351;
   cursor: not-allowed;
 }
 
