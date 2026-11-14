@@ -33,6 +33,7 @@ body, h1, h2, p {
 
 .page-heading h1 {
   color: var(--muted);
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", sans-serif;
   font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: 0.03em;
