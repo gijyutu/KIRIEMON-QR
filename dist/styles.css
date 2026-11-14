@@ -1,36 +1,55 @@
+/*
+  KIRIEMON QRコードサイトの共通スタイル。
+  index.html（作成ページ）と howto.html（使い方ページ）の両方から読み込まれる。
+
+  書き方の基本:
+  ・セレクター { プロパティ: 値; } で、どの要素をどう見せるかを指定する。
+  ・先頭に「.」（ドット）が付くものは class 名（HTMLの class="..." と対応する）。
+  ・「#」（シャープ）が付くものは id 名（HTMLの id="..." と対応する）。
+  ・var(--muted) のような書き方は、下で定義しているCSS変数（共通の色）を呼び出している。
+*/
+
+/* :root はページ全体の基準になる要素。ここで色やフォントを変数として定義する。 */
 :root {
-  color-scheme: light;
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
-  color: #181818;
-  background: #fff;
-  --muted: #73736f;
-  --line: #b8b8b3;
-  --accent: #c54831;
+  color-scheme: light; /* ライトテーマ（白背景）で表示する。 */
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; /* 端末に合わせた日本語フォント。 */
+  color: #181818; /* 基本の文字色（ほぼ黒）。 */
+  background: #fff; /* 基本の背景色（白）。 */
+  --muted: #73736f; /* 補足テキスト用の控えめなグレー。 */
+  --line: #b8b8b3; /* 罫線用のグレー。 */
+  --accent: #c54831; /* エラーやカーソルに使う赤系の色。 */
 }
 
+/* box-sizing: border-box で、幅や高さに余白・枠線を含めて計算する。
+   レイアウトが崩れにくくなる、定番のリセット。 */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
+/* ブラウザーが初期設定で付ける余白をなくして、見た目を揃える。 */
 body, h1, h2, p {
   margin: 0;
 }
 
+/* 画面全体のコンテナ。中央寄せにして、スマホでも読みやすい幅に収める。 */
 .workspace {
-  display: flex;
-  flex-direction: column;
-  width: min(100%, 32rem);
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin-inline: auto;
+  display: flex; /* 子要素を縦に並べるためのフレックスボックス。 */
+  flex-direction: column; /* 縦方向に並べる。 */
+  width: min(100%, 32rem); /* 画面幅いっぱい、ただし最大32rem（約512px）。 */
+  min-height: 100vh; /* 画面の高さいっぱいを使う（古いブラウザー向け）。 */
+  min-height: 100dvh; /* スマホのアドレスバーを考慮した画面の高さ。 */
+  margin-inline: auto; /* 左右の余白を自動にして中央寄せ。 */
+  /* 上下左右の余白。env(safe-area-inset-*) は、iPhoneのノッチなどで隠れないための余白。 */
   padding: calc(36px + env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
 }
 
+/* ページ上部の見出しエリア。要素を縦に並べ、8pxの間隔を空ける。 */
 .page-heading {
   display: grid;
   gap: 8px;
 }
 
+/* 学校名（h1）。控えめなグレーで小さめに表示する。 */
 .page-heading h1 {
   color: var(--muted);
   font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", sans-serif;
@@ -40,6 +59,8 @@ body, h1, h2, p {
   line-height: 1.4;
 }
 
+/* 「KIRIEMON QRコード作成」などの大きな見出し。
+   clamp(最小, 画面幅に応じた値, 最大) で、スマホでもPCでも適切な大きさになる。 */
 .page-heading p {
   font-size: clamp(1.4rem, 5vw, 1.85rem);
   font-weight: 750;
@@ -47,6 +68,7 @@ body, h1, h2, p {
   line-height: 1.3;
 }
 
+/* 結果ダイアログ内の「KIRIEMON」ロゴ文字。 */
 .wordmark {
   font-size: 1.75rem;
   font-weight: 800;
@@ -54,31 +76,36 @@ body, h1, h2, p {
   line-height: 1.25;
 }
 
+/* 入力フォーム全体。縦に伸ばして、生成ボタンを画面下部に置く。 */
 .editor {
   display: flex;
-  flex: 1;
+  flex: 1; /* 残りの高さを埋める。 */
   flex-direction: column;
-  margin-top: clamp(52px, 10vh, 84px);
+  margin-top: clamp(52px, 10vh, 84px); /* 見出しとの間隔。画面の高さに応じて変える。 */
 }
 
+/* 入力欄と下線をまとめる領域。エラー時は下線が赤くなる。 */
 .writing-area {
-  position: relative;
+  position: relative; /* 中の透明レイヤーを絶対配置するための基準。 */
   border-bottom: 1px solid var(--line);
 }
 
+/* 入力欄にフォーカス（カーソル）があるときは下線を黒くする。 */
 .writing-area:focus-within {
   border-bottom-color: #181818;
   box-shadow: 0 1px 0 #181818;
 }
 
+/* 入力内容にエラーがあるとき（aria-invalid="true"）は下線を赤くする。 */
 .writing-area:has([aria-invalid="true"]) {
   border-bottom-color: var(--accent);
   box-shadow: 0 1px 0 var(--accent);
 }
 
+/* 実際の文字入力欄。下線だけのシンプルな見た目にする。 */
 textarea {
   position: relative;
-  z-index: 1;
+  z-index: 1; /* 透明レイヤーより手前に置く。 */
   display: block;
   width: 100%;
   /* 入力が空のときは罫線を近くに置き、改行や折り返しに合わせて広げる。 */
@@ -86,35 +113,38 @@ textarea {
   max-height: 222px;
   margin: 0;
   padding: 0 0 6px;
-  resize: none;
+  resize: none; /* ユーザーによる高さ変更を禁止（自動で伸びるため）。 */
   border: 0;
   border-radius: 0;
   outline: none;
   background: transparent;
   color: inherit;
-  caret-color: var(--accent);
+  caret-color: var(--accent); /* カーソルの色を赤系にする。 */
   font: inherit;
   font-size: clamp(1.5rem, 5vw, 1.75rem);
   line-height: 1.55;
   letter-spacing: 0.02em;
 }
 
+/* エラーの文字に波線を描くための透明レイヤー。
+   テキストエリアと同じ位置・同じ文字サイズにして、文字の上に重ねる。 */
 .invalid-marker-layer {
   position: absolute;
   z-index: 2;
-  inset: 0;
+  inset: 0; /* 上下左右いっぱいに広げる。 */
   padding: 0 0 6px;
   overflow: hidden;
-  color: transparent;
+  color: transparent; /* 文字自体は透明にし、下線だけ見せる。 */
   font: inherit;
   font-size: clamp(1.5rem, 5vw, 1.75rem);
   line-height: 1.55;
   letter-spacing: 0.02em;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* 改行や連続スペースを入力どおりに保つ。 */
   overflow-wrap: break-word;
-  pointer-events: none;
+  pointer-events: none; /* マウス操作は下の入力欄に通す。 */
 }
 
+/* エラー箇所を包む span。透明な文字に波線の下線を付ける。 */
 .invalid-marker {
   color: transparent;
   text-decoration-line: underline;
@@ -124,15 +154,17 @@ textarea {
   text-underline-offset: 0.1em;
 }
 
+/* 入力欄が空のときに表示される案内文の色。 */
 textarea::placeholder {
   color: var(--muted);
   opacity: 1;
 }
 
+/* 入力欄の下に置く、ヒントと文字数カウンターの行。 */
 .field-details {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: baseline; /* 文字の基準線を揃える。 */
+  justify-content: space-between; /* ヒントは左、カウンターは右に寄せる。 */
   gap: 12px;
   margin-top: 12px;
   color: var(--muted);
@@ -140,12 +172,14 @@ textarea::placeholder {
   line-height: 1.6;
 }
 
+/* 文字数カウンター。数字の幅を揃えて、増減してもガタつかないようにする。 */
 .count {
   flex: none;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
 
+/* エラーメッセージの領域。最初は高さ0・透明にして隠しておく。 */
 .error {
   max-height: 0;
   margin: 0;
@@ -153,50 +187,56 @@ textarea::placeholder {
   opacity: 0;
   font-size: 0.875rem;
   line-height: 1.6;
-  transition: max-height 180ms ease, margin 180ms ease, opacity 180ms ease;
+  transition: max-height 180ms ease, margin 180ms ease, opacity 180ms ease; /* 表示時にふわっと開く。 */
 }
 
+/* エラーがあるとき（has-message）は、高さと不透明度を戻して表示する。 */
 .error.has-message {
   max-height: min(8em, 28vh);
   margin: 10px 0 24px;
-  overflow-y: auto;
+  overflow-y: auto; /* メッセージが長いときはスクロールできる。 */
   opacity: 1;
   overscroll-behavior: contain;
 }
 
+/* エラーメッセージと、文字数オーバーの表示を赤にする。 */
 .error, .over-limit {
   color: var(--accent);
 }
 
+/* すべてのボタンの共通設定。 */
 button {
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent; /* スマホでタップしたときの青い枠を消す。 */
   font: inherit;
   cursor: pointer;
 }
 
+/* キーボード操作でボタンを選んだときだけ、黒い枠を付けて見やすくする。 */
 button:focus-visible {
   outline: 2px solid #181818;
   outline-offset: 4px;
 }
 
+/* ボタン内のアイコン（SVG）の大きさと線の太さ。 */
 button svg {
   flex: none;
   width: 24px;
   height: 24px;
-  stroke: currentColor;
+  stroke: currentColor; /* 文字色と同じ色で線を描く。 */
   stroke-width: 1.75;
   stroke-linecap: square;
   stroke-linejoin: miter;
 }
 
+/* 「QRコードを生成」ボタン。黒背景・白文字の大きなボタン。 */
 .generate-button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* 文字は左、矢印は右に置く。 */
   gap: 16px;
   width: 100%;
   min-height: 60px;
-  margin-top: auto;
+  margin-top: auto; /* フォームの一番下に押し出す。 */
   padding: 14px 20px;
   border: 0;
   border-radius: 5px;
@@ -207,10 +247,12 @@ button svg {
   line-height: 1.5;
 }
 
+/* マウスを乗せたときは少し明るい黒にする。 */
 .generate-button:hover {
   background: #333;
 }
 
+/* 押せない状態（disabled）は灰色にして、禁止カーソルを出す。 */
 .generate-button:disabled,
 .generate-button:disabled:hover,
 .generate-button:disabled:active {
@@ -219,12 +261,15 @@ button svg {
   cursor: not-allowed;
 }
 
+/* 押している瞬間は少し暗くする。 */
 .generate-button:active {
   background: #444;
 }
 
-.qr-trademark {
-  display: block;
+/* ページ下部の商標・著作権表示。 */
+.site-footer {
+  display: grid;
+  gap: 4px;
   margin-top: 14px;
   color: var(--muted);
   font-size: 0.75rem;
@@ -232,10 +277,12 @@ button svg {
   text-align: center;
 }
 
+/* ダイアログが開いているあいだは、後ろのページをスクロールさせない。 */
 body:has(.qr-dialog[open]) {
   overflow: hidden;
 }
 
+/* QRコードを表示するダイアログ（モーダル）。画面いっぱいに広げる。 */
 .qr-dialog {
   position: fixed;
   inset: 0;
@@ -252,11 +299,13 @@ body:has(.qr-dialog[open]) {
   overscroll-behavior: contain;
 }
 
+/* ダイアログが開いたときの並び。上に見出し、下にQRコードを置く。 */
 .qr-dialog[open] {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr); /* 上は必要な高さ、下は残り全部。 */
 }
 
+/* ダイアログ上部の見出し行。 */
 .dialog-heading {
   display: flex;
   align-items: center;
@@ -265,16 +314,18 @@ body:has(.qr-dialog[open]) {
   padding: calc(18px + env(safe-area-inset-top)) max(22px, env(safe-area-inset-right)) 0 max(22px, env(safe-area-inset-left));
 }
 
+/* ダイアログ内のロゴ文字は少し小さめにする。 */
 .dialog-heading .wordmark {
   font-size: 1.125rem;
 }
 
+/* ダイアログを閉じるボタン。 */
 .close-button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 44px;
+  min-height: 44px; /* 指で押しやすい高さを確保する。 */
   padding: 8px 0 8px 12px;
   border: 0;
   background: transparent;
@@ -282,48 +333,54 @@ body:has(.qr-dialog[open]) {
   font-size: 0.875rem;
 }
 
+/* 閉じるボタンにマウスを乗せたときはグレーにする。 */
 .close-button:hover {
   color: var(--muted);
 }
 
+/* 閉じるボタンの×アイコンの大きさ。 */
 .close-button svg {
   width: 20px;
   height: 20px;
 }
 
+/* QRコードとその説明文を中央に置く領域。 */
 .qr-stage {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center; /* 縦方向の中央に寄せる。 */
   margin: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   gap: 16px;
   padding: 16px 24px 24px;
   text-align: center;
 }
 
+/* 入力した文字の表示。長い場合はスクロールでき、折り返して表示する。 */
 .qr-caption {
   flex: none;
   max-height: 20%;
   padding-inline: 16px;
   overflow: auto;
   overflow-wrap: anywhere;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* 入力どおりの改行・空白を保つ。 */
   font-size: clamp(1rem, 4vw, 1.25rem);
   font-weight: 600;
   line-height: 1.5;
 }
 
+/* QRコードの画像。なるべく大きく、画面の高さに収まるようにする。 */
 .qr-image {
   display: block;
   width: min(100%, 32rem);
   max-height: 68dvh;
   margin-inline: auto;
   min-height: 0;
-  aspect-ratio: 1;
+  aspect-ratio: 1; /* 正方形を保つ。 */
   object-fit: contain;
-  image-rendering: pixelated;
+  image-rendering: pixelated; /* 拡大しても輪郭をぼかさず、くっきり表示する。 */
 }
 
+/* 画面には表示せず、スクリーンリーダーにだけ読ませたい文字用のクラス。 */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -334,6 +391,7 @@ body:has(.qr-dialog[open]) {
   white-space: nowrap;
 }
 
+/* 画面の高さが650px以下のとき（横長スマホなど）は、余白と入力欄を小さくする。 */
 @media (max-height: 650px) {
   .workspace {
     padding-top: calc(24px + env(safe-area-inset-top));
@@ -352,6 +410,7 @@ body:has(.qr-dialog[open]) {
   }
 }
 
+/* さらに高さが480px以下のときは、もっと詰めて表示する。 */
 @media (max-height: 480px) {
   .editor {
     margin-top: 28px;
@@ -366,8 +425,148 @@ body:has(.qr-dialog[open]) {
   }
 }
 
+/* 端末で「視差効果を減らす」設定が有効なら、アニメーションを無効にする。 */
 @media (prefers-reduced-motion: reduce) {
   .error {
     transition: none;
   }
+}
+
+/* 見出し行（学校名とチップを横に並べる） */
+.heading-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* 「使い方」「← QRコードを作る」の小さなチップ型リンク。 */
+.howto-link {
+  flex: none;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px; /* 大きく丸めて、カプセル型にする。 */
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none; /* 下線を消す。 */
+  white-space: nowrap; /* 途中で折り返さない。 */
+}
+
+/* チップにマウスを乗せたときは黒くする。 */
+.howto-link:hover {
+  color: #181818;
+  border-color: #181818;
+}
+
+/* キーボード操作でチップを選んだときの枠。 */
+.howto-link:focus-visible {
+  outline: 2px solid #181818;
+  outline-offset: 2px;
+}
+
+/* 使い方ページ専用の調整。見出しをトップページより小さくする。 */
+.howto-page .page-heading p {
+  font-size: 1.25rem;
+}
+
+/* 使い方ページ冒頭の説明文。 */
+.howto-intro {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+}
+
+/* 使い方ページの各セクション。上に細い罫線を引いて区切りにする。 */
+.guide {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #ebe9e4;
+}
+
+/* セクションの小見出し。ラベルのように小さく、字間を広げる。 */
+.guide h2 {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* 手順・ルールのリスト。左の余白は番号や点の分。 */
+.guide ol,
+.guide ul {
+  margin: 0;
+  padding-left: 1.15em;
+}
+
+/* リストの各項目。読みやすい行間に調整する。 */
+.guide li {
+  margin-bottom: 3px;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+/* セクション内の説明文。 */
+.guide p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+/* セクション内のリンクは、周りの文字色に合わせる。 */
+.guide a {
+  color: inherit;
+  text-underline-offset: 2px;
+}
+
+/* 使い方ページ：使える文字の一覧表 */
+.kana-table {
+  width: 100%;
+  margin: 0 0 10px;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* 表の見出し行。小さなラベルのように表示する。 */
+.kana-table thead th {
+  padding: 0 8px 5px 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+/* 各行のセル。細い罫線で区切る。 */
+.kana-table tbody th,
+.kana-table tbody td {
+  padding: 6px 8px 6px 0;
+  border-bottom: 1px solid #ebe9e4;
+  text-align: left;
+  vertical-align: top;
+}
+
+/* 種類の列は折り返さず、控えめな色にする。 */
+.kana-table tbody th {
+  width: 6.5em;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 文字の列は、長くても枠内で折り返す。 */
+.kana-table tbody td {
+  overflow-wrap: anywhere;
+}
+
+/* 最後の行の罫線は消す。 */
+.kana-table tbody tr:last-child th,
+.kana-table tbody tr:last-child td {
+  border-bottom: 0;
 }
