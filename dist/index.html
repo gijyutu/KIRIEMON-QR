@@ -1,45 +1,89 @@
 <!doctype html>
+<!--
+  KIRIEMON QRコード作成ページ（トップページ）。
+  入力した文字をブラウザー内でQRコードに変換し、ダイアログに大きく表示する。
+  見た目は styles.css、動きは app.js が担当している。
+-->
 <html lang="ja">
   <head>
+    <!-- 文字コードの指定。日本語が文字化けしないようにする。 -->
     <meta charset="utf-8">
+    <!-- スマートフォンで画面幅に合わせて表示するための設定。 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <!-- 検索結果などに表示される、ページの短い説明。 -->
     <meta name="description" content="入力した文字をブラウザー内でQRコードに変換し、大きく表示できます。">
+    <!--
+      コンテンツセキュリティポリシー（CSP）。
+      外部サイトへの通信や、外部スクリプトの読み込みを禁止して安全に動かすための設定。
+      img-src data: は、QRコード画像（data: 形式）の表示を許可するためのもの。
+    -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+    <!-- ブラウザーのタブに表示されるページタイトル。 -->
     <title>KIRIEMON</title>
+    <!-- タブやブックマークに表示される小さなアイコン（QRコード風のSVG）。 -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cpath fill='%23181818' d='M0 0h2v2H0zm2 2h2v2H2z'/%3E%3C/svg%3E">
+    <!-- 共通のスタイルシート。 -->
     <link rel="stylesheet" href="styles.css">
+    <!--
+      QRコード生成ライブラリ（Project Nayuki QR Code generator）。
+      defer を付けると、HTMLの読み込みが終わってから順番に実行される。
+    -->
     <script defer src="vendor/qrcodegen-v1.8.0-es6.js"></script>
+    <!-- このページの動きを担当するスクリプト。 -->
     <script defer src="app.js"></script>
   </head>
   <body>
+    <!-- 画面全体のコンテナ。中央寄せや余白は styles.css で調整している。 -->
     <main class="workspace">
+      <!-- ページ上部の見出しエリア。 -->
       <header class="page-heading">
-        <h1>鶴城丘高校 技術部</h1>
+        <!-- 学校名と「使い方」チップを横に並べる行。 -->
+        <div class="heading-bar">
+          <h1>鶴城丘高校 技術部</h1>
+          <!-- 使い方ページへのリンク（小さなチップ型ボタン）。 -->
+          <a class="howto-link" href="howto.html">使い方</a>
+        </div>
         <p>KIRIEMON QRコード作成</p>
       </header>
 
+      <!-- 文字を入力してQRコードを生成するフォーム。送信処理は app.js が担当する。 -->
       <form id="qr-form" class="editor">
+        <!-- スクリーンリーダー利用者向けのラベル（画面上では非表示になる）。 -->
         <label for="qr-text" class="visually-hidden">打ちたい文字</label>
         <span id="qr-limit" class="visually-hidden">60字以内</span>
+        <!-- 入力欄と、エラー箇所に波線を描く透明レイヤーを重ねる領域。 -->
         <div class="writing-area">
+          <!-- 不正な文字の位置に波線を描くための透明レイヤー。中身は app.js が作る。 -->
           <div id="qr-markers" class="invalid-marker-layer" aria-hidden="true"></div>
+          <!-- 実際の入力欄。入力量に合わせて高さが自動で広がる。 -->
           <textarea id="qr-text" rows="4" placeholder="ここに文字を入力" spellcheck="false" autocapitalize="off" aria-describedby="qr-limit qr-hint qr-count qr-error"></textarea>
         </div>
+        <!-- 入力のヒントと文字数カウンター。 -->
         <div class="field-details">
           <p id="qr-hint">ひらがな・カタカナ・句読点・「ー」・空白が使えます。</p>
           <span id="qr-count" class="count">0 / 60</span>
         </div>
+        <!-- エラーメッセージの表示場所。role="alert" で読み上げられる。 -->
         <p id="qr-error" class="error" role="alert"></p>
+        <!-- QRコード生成ボタン。入力が不正なあいだは disabled（押せない状態）になる。 -->
         <button class="generate-button" type="submit" aria-haspopup="dialog" disabled>
           <span>QRコードを生成</span>
+          <!-- 右向き矢印のアイコン。 -->
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>
         </button>
       </form>
-      <small class="qr-trademark">© 2026 鶴城丘高校 技術部</small>
+      <!-- ページ下部の商標・著作権表示。 -->
+      <footer class="site-footer">
+        <small>QRコードは株式会社デンソーウェーブの登録商標です。</small>
+        <small>© 2026 鶴城丘高校 技術部</small>
+      </footer>
+      <!-- JavaScriptが無効な環境向けの案内。 -->
       <noscript><p>QRコードの生成にはJavaScriptが必要です。</p></noscript>
     </main>
 
+    <!-- 生成したQRコードを大きく表示するダイアログ（モーダルウィンドウ）。 -->
     <dialog id="qr-dialog" class="qr-dialog" aria-labelledby="qr-heading">
+      <!-- ダイアログ上部の見出しと閉じるボタン。 -->
       <header class="dialog-heading">
         <span class="wordmark" aria-hidden="true">KIRIEMON</span>
         <h2 id="qr-heading" class="visually-hidden">生成したQRコード</h2>
@@ -48,6 +92,7 @@
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
         </button>
       </header>
+      <!-- QRコード画像と、入力した文字の表示エリア。 -->
       <div class="qr-stage">
         <img id="qr-image" class="qr-image" alt="生成したQRコード">
         <p id="qr-caption" class="qr-caption" aria-live="polite"></p>
