@@ -1,0 +1,41 @@
+
+name: "🎨 UI/UX改善"
+description: "使いにくいところや、改善したいところを共有します"
+title: "[UI/UX] "
+labels:
+  - ui/ux
+
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 改善したいところ
+      description: どこが使いにくい、分かりにくいと感じましたか？
+      placeholder: 例：ボタンの場所が分かりにくい
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 改善アイデア
+      description: どうすればよくなると思いますか？
+      placeholder: 例：ボタンを画面上部に移動する
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 種類
+      options:
+        - UI（デザイン・見た目）
+        - UX（操作性・使いやすさ）
+        - 表示・レイアウト
+        - その他
+    validations:
+      required: true
+
+  - type: textarea
+    id: reference
+    attributes:
+      label: 参考画像・補足
+      description: スクリーンショットや参考になる情報があれば記載してください。
