@@ -7,6 +7,12 @@ KIRIEMON用に設計されています。
 
 リポジトリのルートで `python3 -m http.server 8000 --bind 127.0.0.1 --directory dist` を実行し、ブラウザーで `http://127.0.0.1:8000/` を開きます。
 
+## GitHub Actions PRレビュー
+
+`.github/workflows/ai-pr-review.yml` はPRの作成・更新時に既存CI/CDと並行してレビューを実行します。OpenCode の `GLM-5.3-Flash Free` を使い、修正が必要な箇所と大規模変更の横断的な確認点をPRコメントに投稿します。
+
+リポジトリの **Settings → Secrets and variables → Actions** に `OPENCODE_API_KEY` を登録してください。キーはworkflowからOpenCode CLIへ渡し、PR本文やログには出しません。ForkからのPRではGitHubがSecretsを渡さないため、このレビューworkflowは利用できません。
+
 ## 対応文字データベース
 
 入力できる文字列は `dist/kana-db.json` で管理しています。
