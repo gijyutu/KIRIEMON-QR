@@ -1,0 +1,79 @@
+
+name: "🐛 バグ報告"
+description: "KIRIEMON-QRの不具合を報告します"
+title: "[Bug] "
+labels:
+  - bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        不具合の詳細を入力してください。
+        不明な項目は空欄でも構いません。
+
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 発生している問題を簡潔に説明してください。
+      placeholder: QRコードを生成すると画面が真っ白になる
+    validations:
+      required: true
+
+  - type: dropdown
+    id: location
+    attributes:
+      label: 発生箇所
+      options:
+        - QRコード生成
+        - QRコード読み取り
+        - 使い方
+        - その他
+    validations:
+      required: true
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: 発生頻度
+      options:
+        - 毎回発生する
+        - 時々発生する
+        - 一度だけ発生した
+        - 不明
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      description: 不具合が発生するまでの操作を記載してください。
+      placeholder: |
+        1. アプリを開く
+        2. QRコード生成を選択
+        3. 生成ボタンを押す
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する挙動
+      placeholder: 本来どのように動作するべきですか？
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際の挙動
+      placeholder: 実際には何が起きましたか？
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 補足情報
+      description: スクリーンショットや追加情報など
