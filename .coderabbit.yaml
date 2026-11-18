@@ -1,0 +1,17 @@
+language: ja
+
+reviews:
+  profile: chill
+  high_level_summary: true
+  high_level_summary_instructions: >-
+    変更内容と利用者への影響を日本語で簡潔にまとめてください。
+  path_instructions:
+    - path: "dist/**"
+      instructions: |
+        このリポジトリは、入力文字列をKIRIEMON向けQRコードに変換する静的Webアプリです。
+        文字の正規化、対応文字の制限、QRコードへの格納内容、画面表示の一致を確認してください。
+        入力検証、キーボード操作、読みやすさ、スマートフォン表示への回帰にも注意してください。
+        根拠のない指摘や、見た目の好みだけに基づく指摘は避けてください。
+    - path: "*.json"
+      instructions: |
+        既存の文字データ形式との整合性、重複や不足、アプリ側の対応ロジックとの不一致を確認してください。
