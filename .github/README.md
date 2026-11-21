@@ -5,6 +5,7 @@ KIRIEMON用に設計されています。
 
 mainへの直接Pushは禁止されています。
 必ずmainブランチ以外にpushしてPRを作成してください。
+
 ## ローカルで開く
 
 リポジトリのルートで `python3 -m http.server 8000 --bind 127.0.0.1 --directory dist` を実行し、ブラウザーで `http://127.0.0.1:8000/` を開きます。
